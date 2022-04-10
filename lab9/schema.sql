@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS owner (
     second_name varchar(50) NOT NULL,
     patronymic varchar(50),
     birthdate date,
-    dummy varchar(255)
+    phone varchar(12)
 );
 
 CREATE TYPE garden_number AS (
@@ -68,4 +68,3 @@ CREATE TABLE IF NOT EXISTS payment (
     owner_id int REFERENCES owner(id) ON DELETE CASCADE ON UPDATE RESTRICT,
     contribution_id int REFERENCES contribution(id) ON DELETE CASCADE ON UPDATE RESTRICT
 );
-
