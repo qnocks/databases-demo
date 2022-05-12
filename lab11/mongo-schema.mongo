@@ -1,0 +1,128 @@
+use gardering
+
+db.owner.drop();
+db.garden.drop();
+db.buildingType.drop();
+db.contribution.drop();
+
+// Create garden document
+db.garden.insertMany([
+    {
+        number: {
+            name: "K",
+            line: 1
+        },
+        area: 1000,
+        cost: 10000
+    },
+    {
+        number: {
+            name: "K",
+            line: 2
+        },
+        area: 2000,
+        cost: 20000
+    },
+    {
+        number: {
+            name: "K",
+            line: 3
+        },
+        area: 3000,
+        cost: 30000
+    }
+]);
+
+// Create owner document
+db.owner.insertMany([
+    {
+        firstName: "Иван",
+        secondName: "Иванов",
+        patronymic: "Романович",
+        birthDate: "2004-02-02",
+        phone: "89049765544",
+    },
+    {
+        firstName: "Петр",
+        secondName: "Шумов",
+        patronymic: "Максимович",
+        birthDate: "2002-02-11",
+        phone: "89029769542",
+    },
+    {
+        firstName: "Алена",
+        secondName: "Петрова",
+        patronymic: "Олеговна",
+        birthDate: "2004-02-14",
+        phone: "89119765511",
+    }
+]);
+
+// Many to Many between owner-garden
+// db.owner.updateOne({firstName: "Иван"}, { $set: { gardens: [ObjectId("62658e943cc2a74eec2176f5")]}});
+// db.owner.updateOne({firstName: "Петр"}, { $set: { gardens: [ObjectId("62658e943cc2a74eec2176f6"), ObjectId("62658e943cc2a74eec2176f7")]}});
+// db.owner.updateOne({firstName: "Алена"}, { $set: { gardens: [ObjectId("62658e943cc2a74eec2176f7")]}});
+
+// Many to Many between garden-owner
+db.garden.updateOne({area: 1000}, { $set: { owners: [ObjectId("62533dfdbfeff61e6b629b9c")]}});
+db.garden.updateOne({area: 2000}, { $set: { owners: [ObjectId("62533dfdbfeff61e6b629b9d")]}});
+db.garden.updateOne({area: 3000}, { $set: { owners: [ObjectId("62533dfdbfeff61e6b629b9e"), ObjectId("62533dfdbfeff61e6b629b9d")]}});
+
+
+// Create contribution document
+db.contribution.insertMany([
+    {
+        name: "Взнос на землю",
+        description: "описание взноса на землю",
+        price: 1000,
+        date: new Date()
+    },
+    {
+        name: "Взнос на обработку от клеща",
+        description: "описание взноса на обработку",
+        price: 2000,
+        date: new Date()
+    },
+    {
+        name: "Взнос на воду",
+        description: "описание взноса на воду",
+        price: 3000,
+        date: new Date()
+    },
+]);
+
+// Many to Many between owner-contribution
+db.owner.updateOne({firstName: "Иван"}, { $set: { contributions: [ObjectId("6253464ebfeff61e6b629ba3")]}});
+db.owner.updateOne({firstName: "Петр"}, { $set: { contributions: [ObjectId("6253464ebfeff61e6b629ba4")]}});
+db.owner.updateOne({firstName: "Алена"}, { $set: { contributions: [ObjectId("6253464ebfeff61e6b629ba5")]}});
+
+// Many to Many between contribution-owner
+// db.contribution.updateOne({name: "Взнос на землю"}, { $set: { owners: [ObjectId("62533dfdbfeff61e6b629b9c")]}});
+// db.contribution.updateOne({name: "Взнос на обработку от клеща"}, { $set: { owners: [ObjectId("62533dfdbfeff61e6b629b9d")]}});
+// db.contribution.updateOne({name: "Взнос на воду"}, { $set: { owners: [ObjectId("62533dfdbfeff61e6b629b9e")]}});
+
+// Create contribution document
+db.buildingType.insertMany([
+    {
+        name: "Туалет"
+    },
+    {
+        name: "Колонка"
+    },
+    {
+        name: "Магазин"
+    },
+    {
+        name: "Баня"
+    },
+]);
+
+// Many to Many between garden-buildingType
+db.garden.updateOne({area: 1000}, { $set: { buildingTypes: [ObjectId("62534960bfeff61e6b629bab")]}});
+db.garden.updateOne({area: 2000}, { $set: { buildingTypes: [ObjectId("62534960bfeff61e6b629bac"), ObjectId("62534960bfeff61e6b629bad")]}});
+db.garden.updateOne({area: 3000}, { $set: { buildingTypes: [ObjectId("62534960bfeff61e6b629bad")]}});
+
+// Many to Many between buildingType-garden
+// db.buildingType.updateOne({name: "Туалет"}, { $set: { gardens: [ObjectId("62533cf9bfeff61e6b629b93")]}});
+// db.buildingType.updateOne({name: "Колонка"}, { $set: { gardens: [ObjectId("62533cf9bfeff61e6b629b94")]}});
+// db.buildingType.updateOne({name: "Магазин"}, { $set: { gardens: [ObjectId("62533cf9bfeff61e6b629b95")]}});

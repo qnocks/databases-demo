@@ -1,3 +1,12 @@
+TRUNCATE TABLE building CASCADE ;
+TRUNCATE TABLE building_type CASCADE ;
+TRUNCATE TABLE contribution CASCADE ;
+TRUNCATE TABLE facility CASCADE ;
+TRUNCATE TABLE garden CASCADE ;
+TRUNCATE TABLE owner CASCADE ;
+TRUNCATE TABLE owner_garden CASCADE ;
+TRUNCATE TABLE payment CASCADE ;
+
 -- Insert
 INSERT INTO building_type(id, name, is_public)
 VALUES (1, 'building_type1', true),
@@ -7,7 +16,8 @@ VALUES (1, 'building_type1', true),
 INSERT INTO garden(id, number, area, cost)
 VALUES (1, (1, 'K'), 1000, 1000000),
        (2, (2, 'K'), 2000, 2000000),
-       (3, (3, 'K'), 3000, 3000000);
+       (3, (3, 'K'), 3000, 3000000),
+       (4, (2, null), 4000, 4000000);
 
 INSERT INTO building(id, garden_id, building_type_id)
 VALUES (1, 1, 1),
@@ -17,7 +27,8 @@ VALUES (1, 1, 1),
 INSERT INTO facility(id, garden_id, building_type_id, name, area)
 VALUES (1, 1, 1, 'facility1', 1000),
        (2, 1, 2, 'facility2', 2000),
-       (3, 2, 3, 'facility3', 3000);
+       (3, 2, 3, 'facility3', 3000),
+       (4, 2, 3, 'facility4', 4000);
 
 INSERT INTO owner(id, first_name, second_name, patronymic, birthdate, phone)
 VALUES (1, 'first_name1', 'second_name1', 'patronymic1', '2022-04-10', '89059721226'),
@@ -48,10 +59,14 @@ SELECT *
 FROM building b
 WHERE b.garden_id = 2;
 
-select *
-from building
-         join building_type bt on bt.id = building.building_type_id
-where bt.name = 'building_type2';
+SELECT *
+FROM facility f
+where f.garden_id = 2;
+
+-- SELECT *
+-- FROM building
+--          join building_type bt ON bt.id = building.building_type_id
+-- where bt.name = 'building_type2';
 
 -- Operator
 CREATE OR REPLACE FUNCTION find_building_type(VARCHAR,VARCHAR)
@@ -68,8 +83,6 @@ $$
 $$ IMMUTABLE
     LANGUAGE sql;
 
-SELECT 'K'?'туалет';
-
 CREATE OPERATOR ? (
     -- number
     LEFTARG = VARCHAR,
@@ -77,11 +90,11 @@ CREATE OPERATOR ? (
     RIGHTARG = VARCHAR,
     function = find_building_type,
     commutator = ?
-    );
+);
 
-SELECT 'K'::varchar? 'туалет'::varchar;
+SELECT 'K'::varchar? 'building_type1'::varchar;
 
--- Aggregate functions
+-- Aggregate function
 CREATE OR REPLACE FUNCTION min_garden_number(garden_number, garden_number)
     RETURNS garden_number
     LANGUAGE plpgsql AS
@@ -109,3 +122,5 @@ CREATE AGGREGATE min(garden_number) (
 );
 
 SELECT min(number) FROM garden;
+select *
+from garden;
